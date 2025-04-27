@@ -2,6 +2,9 @@
 
 Um aplicativo web moderno para visualizar o horário atual de cidades ao redor do mundo, com suporte a múltiplos países e uma interface limpa e intuitiva.
 
+## Tags
+`#timezone` `#relogio` `#horario-mundial` `#time-zone-converter` `#world-clock` `#javascript` `#html5` `#css3` `#electron` `#desktop-app` `#time-management` `#productivity` `#time-tracking` `#international-time` `#time-converter`
+
 ## Resumo das Ferramentas, Linguagens e Versões
 
 - **HTML5**: Estrutura da interface (`index.html`)
