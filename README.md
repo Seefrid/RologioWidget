@@ -1,6 +1,6 @@
 # Time Zones
 
-Um aplicativo web moderno para visualizar o horário atual de cidades ao redor do mundo, com suporte a múltiplos países, reordenação por arrastar e soltar, e uma interface limpa e intuitiva.
+Um aplicativo web moderno para visualizar o horário atual de cidades ao redor do mundo, com suporte a múltiplos países com uma interface limpa e intuitiva.
 
 ## Resumo das Ferramentas, Linguagens e Versões
 
