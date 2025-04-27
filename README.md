@@ -70,11 +70,6 @@ Relogio_Widget/
 4. Extraia o arquivo ZIP baixado
 5. Dentro da pasta extraída, execute o arquivo `RelogioWidget.exe`
 
-### Requisitos do Sistema
-- Windows 10 ou superior
-- 100MB de espaço em disco
-- Conexão com internet (para atualização dos horários)
-
 ## Como Usar
 1. Após iniciar o aplicativo, você verá uma tabela com diferentes cidades e seus horários
 2. Clique no botão "Atualizar Horários" para atualizar os horários em tempo real
