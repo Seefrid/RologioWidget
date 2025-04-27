@@ -1,6 +1,6 @@
 # Time Zones
 
-Um aplicativo web moderno para visualizar o horário atual de cidades ao redor do mundo, com suporte a múltiplos países com uma interface limpa e intuitiva.
+Um aplicativo web moderno para visualizar o horário atual de cidades ao redor do mundo, com suporte a múltiplos países e uma interface limpa e intuitiva.
 
 ## Resumo das Ferramentas, Linguagens e Versões
 
@@ -58,105 +58,49 @@ Relogio_Widget/
 - Se "Current Time" aparecer como "Error", o app tentará atualizar automaticamente após o carregamento
 - Salva e restaura automaticamente a seleção e a ordem das cidades escolhidas
 
+## Como Baixar e Instalar
+
+### Windows
+1. Acesse a [página de releases](https://github.com/seu-usuario/RelogioWidget/releases) do projeto
+2. Procure pela versão mais recente (exemplo: `RelogioWidget-win32-x64.zip`)
+3. Clique no arquivo para baixar
+4. Extraia o arquivo ZIP baixado
+5. Dentro da pasta extraída, execute o arquivo `RelogioWidget.exe`
+
+### Requisitos do Sistema
+- Windows 10 ou superior
+- 100MB de espaço em disco
+- Conexão com internet (para atualização dos horários)
+
 ## Como Usar
+1. Após iniciar o aplicativo, você verá uma tabela com diferentes cidades e seus horários
+2. Clique no botão "Atualizar Horários" para atualizar os horários em tempo real
+3. O aplicativo mostra automaticamente:
+   - Bandeira do país
+   - Nome da cidade
+   - Horário atual
 
-1. Clique no ícone de engrenagem (⚙️) para abrir a área de seleção de países/cidades
-2. Selecione um ou mais países (em ordem alfabética, com UTC principal ao lado)
-3. Filtre e selecione cidades/fusos (exibidos como: Cidade — Identificador: UTC, principal com estrela)
-4. Clique em "Update Times" ou no ícone de atualizar (🔄) para buscar os horários atuais
-5. A barra de progresso acima da tabela mostrará o status do carregamento
-6. A tabela exibirá a bandeira, timezone e horário atual de cada cidade selecionada
-7. Você pode arrastar e soltar as linhas para reordenar
-8. Se algum horário aparecer como "Error", o app tentará atualizar automaticamente após o carregamento
-9. Ao reabrir o app, sua seleção e ordem serão restauradas automaticamente
+## Cidades Disponíveis
+- São Paulo/Brasil
+- IST Índia
+- Buenos Aires/Argentina
+- Santiago/Chile
+- Bogotá/Colômbia
+- Lima/Peru
+- San Jose/Costa Rica
+- Mexico City/México
 
-## Como Adicionar Novos Países
+## Solução de Problemas
+Se encontrar algum problema:
+1. Verifique sua conexão com a internet
+2. Reinicie o aplicativo
+3. Se o problema persistir, entre em contato com o suporte
 
-Edite o arquivo `paises.js` seguindo o formato abaixo:
+## Atualizações
+O aplicativo verifica automaticamente por atualizações quando iniciado. Se uma nova versão estiver disponível, você será notificado.
 
-```javascript
-{
-  nome: 'Nome do País',
-  codigo: 'código do país (2 letras)',
-  utc: 'UTC principal',
-  timezones: [
-    { cidade: 'Nome da Cidade', tz: 'Identificador/Timezone', utc: 'UTC do fuso', principal: true/false }
-  ]
-}
-```
-
-- `nome`: Nome do país (no idioma original)
-- `codigo`: Código ISO 3166-1 alpha-2 (2 letras)
-- `utc`: UTC principal do país
-- `timezones`: Array de objetos com:
-  - `cidade`: Nome da cidade
-  - `tz`: Identificador do fuso horário (formato IANA)
-  - `utc`: UTC daquele fuso
-  - `principal`: true se for o fuso/cidade principal
-
-### Exemplo
-
-```javascript
-{
-  nome: 'Brasil',
-  codigo: 'br',
-  utc: 'UTC-3',
-  timezones: [
-    { cidade: 'Brasília', tz: 'America/Sao_Paulo', utc: 'UTC-3', principal: true },
-    { cidade: 'Manaus', tz: 'America/Manaus', utc: 'UTC-4' },
-    { cidade: 'Rio Branco', tz: 'America/Rio_Branco', utc: 'UTC-5' }
-  ]
-}
-```
-
-## Personalização
-
-### Estilos CSS
-
-Você pode personalizar a aparência editando a seção `<style>` do `index.html`. Principais classes:
-
-- `.container`: Container principal
-- `.header-bar`: Barra superior com ícones e título
-- `.icon-btn`: Estilo dos ícones de engrenagem e atualizar
-- `.area-selecao`: Área de seleção de países/cidades
-- `.update-btn`: Botão de atualização
-- `.loading-bar-container`, `.loading-bar`, `.loading-bar-inner`: Barra de progresso
-- `table`, `th`, `td`: Estilos da tabela
-
-### Funcionalidades JavaScript
-
-Toda a lógica está no `index.html`. Funções principais:
-
-- `atualizarHorarios()`: Busca e atualiza horários, mostra barra de progresso
-- `iniciarContador()`: Incrementa horários automaticamente a cada minuto
-- Arrastar e soltar para reordenar
-- Lógica de filtro e seleção de países/cidades
-- Salva/restaura seleção e ordem das cidades no Local Storage
-
-## Requisitos
-
-- Navegador moderno com suporte a:
-  - JavaScript ES6+
-  - Fetch API
-  - Drag and Drop API
-  - CSS Flexbox
-
-## Limitações
-
-- A API timeapi.io possui limites de requisições
-- Necessita de conexão com a internet para buscar horários
-- Depende de serviços externos (timeapi.io e flagcdn.com)
-- Se "Current Time" aparecer como "Error", o app tentará atualizar automaticamente após o carregamento
-- A seleção e ordem são salvas apenas no navegador/local atual
-
-## Contribuição
-
-Sinta-se à vontade para contribuir:
-1. Faça um fork do repositório
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
-4. Push para sua branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
+## Suporte
+Para suporte ou reportar problemas, abra uma issue no [GitHub](https://github.com/seu-usuario/RelogioWidget/issues)
 
 ## Licença
 
