@@ -1,0 +1,14 @@
+{
+  "name": "relogio_widget_app",
+  "version": "1.0.0",
+  "description": "Widget simples de Time Zones das cidades usando Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . RelogioWidget --platform=win32 --arch=x64 --overwrite"
+  },
+  "devDependencies": {
+    "electron": "^28.2.3",
+    "electron-packager": "^17.1.1"
+  }
+}

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Time Zones</title>
+  <style>
+    body {
+      background: #222;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      margin-top: 40px;
+      background: #333;
+      border-radius: 10px;
+      padding: 30px 40px;
+      box-shadow: 0 0 10px #0008;
+      width: 80%;
+      max-width: 800px;
+    }
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .icon-btn {
+      background: #333;
+      color: #bbb;
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4em;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .icon-btn:hover {
+      background: #444;
+      color: #fff;
+    }
+    h2 {
+      text-align: center;
+      margin: 0;
+      flex: 1;
+      font-size: 1.5em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .area-selecao {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+      border: 2px solid #444;
+      border-radius: 8px;
+      padding: 15px 10px 10px 10px;
+      background: #2a2a2a;
+    }
+    .area-selecao.aberta {
+      display: flex;
+    }
+    .abrir-selecao-btn {
+      display: none;
+    }
+    .filtro-container {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: #444;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .filtro-input {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #666;
+      background: #333;
+      color: #fff;
+      flex: 1;
+    }
+    .paises-select {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background: #333;
+      color: #fff;
+      min-width: 200px;
+    }
+    .cidades-container {
+      max-height: 200px;
+      overflow-y: auto;
+      background: #444;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+    .cidades-container.visible {
+      display: block;
+    }
+    .cidade-item {
+      padding: 8px;
+      cursor: pointer;
+      border-bottom: 1px solid #555;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cidade-item:hover {
+      background: #555;
+    }
+    .cidade-item.selected {
+      background: #4caf50;
+    }
+    .timezone-info {
+      color: #aaa;
+      font-size: 0.9em;
+    }
+    .pais-selecionado {
+      background: #4caf50;
+      padding: 5px 10px;
+      border-radius: 3px;
+      margin-left: 10px;
+    }
+    .paises-selecionados {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 10px;
+      background: #444;
+      border-radius: 5px;
+    }
+    .pais-selecionado-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #333;
+      padding: 5px 10px;
+      border-radius: 3px;
+    }
+    .pais-selecionado-item img {
+      width: 20px;
+      height: 15px;
+      border-radius: 2px;
+    }
+    .remove-pais {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      padding: 0 5px;
+    }
+    .toggle-cidades {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 5px;
+      margin-left: auto;
+    }
+    .update-btn {
+      padding: 8px 18px;
+      background: #333;
+      color: #bbb;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    .update-btn:hover {
+      background: #444;
+      color: #fff;
+    }
+    .loading-bar-container {
+      width: 100%;
+      margin: 0 0 18px 0;
+      height: 28px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .loading-bar-container.visible {
+      display: flex;
+    }
+    .loading-bar-label {
+      color: #bbb;
+      font-size: 1em;
+      margin-bottom: 4px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .loading-bar {
+      width: 90%;
+      height: 8px;
+      background: #444;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+    .loading-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #888 0%, #4caf50 100%);
+      width: 0%;
+      border-radius: 5px;
+      transition: width 0.3s;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px 18px;
+      text-align: center;
+      border-bottom: 1px solid #444;
+    }
+    th {
+      background: #444;
+    }
+    html {
+      touch-action: manipulation;
+    }
+    body {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-bar">
+      <button class="icon-btn" id="abrirSelecaoBtn" title="Configurar Países/Cidades" onclick="abrirSelecao()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 5 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09c0 .66.39 1.25 1 1.51a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.66 0 1.25.39 1.51 1H21a2 2 0 0 1 0 4h-.09c-.26 0-.51.1-.7.29-.19.19-.29.44-.29.7z"/></svg>
+      </button>
+      <h2>Time Zones</h2>
+      <button class="icon-btn" id="refreshBtn" title="Atualizar Horários" onclick="atualizarHorarios()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.37 5.37A9 9 0 0 0 21 15.49"/></svg>
+      </button>
+    </div>
+    <div class="loading-bar-container" id="loadingBarContainer">
+      <span class="loading-bar-label" id="loadingBarLabel">Updating times...</span>
+      <div class="loading-bar">
+        <div class="loading-bar-inner" id="loadingBarInner"></div>
+      </div>
+    </div>
+    <div class="area-selecao" id="areaSelecao">
+      <div class="filtro-container">
+        <select id="paisesSelect" class="paises-select">
+          <option value="">Selecione um país</option>
+        </select>
+        <span id="paisSelecionado" class="pais-selecionado" style="display: none;"></span>
+        <button class="toggle-cidades" onclick="toggleCidades()">▼</button>
+      </div>
+      <div class="filtro-container">
+        <input type="text" id="filtroCidades" class="filtro-input" placeholder="Filtrar cidades..." disabled>
+      </div>
+      <div id="cidadesContainer" class="cidades-container"></div>
+      <div id="paisesSelecionados" class="paises-selecionados"></div>
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 20px; margin-top: 10px;">
+        <button class="update-btn" onclick="atualizarHorarios()">Update Times</button>
+      </div>
+      <button class="abrir-selecao-btn" style="background:#444;color:#fff;margin-top:10px;display:block;" onclick="fecharSelecao()">Fechar Seleção</button>
+    </div>
+    <table id="tzTable">
+      <thead>
+        <tr>
+          <th>Flag</th>
+          <th>TimeZone</th>
+          <th>Current Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- City rows -->
+      </tbody>
+    </table>
+  </div>
+  <script src="paises.js"></script>
+  <script>
+    const tbody = document.querySelector('#tzTable tbody');
+    const paisesSelect = document.getElementById('paisesSelect');
+    const filtroCidades = document.getElementById('filtroCidades');
+    const cidadesContainer = document.getElementById('cidadesContainer');
+    const paisSelecionado = document.getElementById('paisSelecionado');
+    const paisesSelecionados = document.getElementById('paisesSelecionados');
+    const areaSelecao = document.getElementById('areaSelecao');
+    const abrirSelecaoBtn = document.getElementById('abrirSelecaoBtn');
+    const loadingBarContainer = document.getElementById('loadingBarContainer');
+    const loadingBarInner = document.getElementById('loadingBarInner');
+    const loadingBarLabel = document.getElementById('loadingBarLabel');
+    let cidadesSelecionadas = new Set();
+    let horariosAtuais = new Map();
+    let timerInterval;
+    let ordemSelecionada = [];
+    let ordemPaisesSelecionados = [];
+    let modoOrdemPaisPersonalizada = false;
+
+    // Preencher o select com os países em ordem alfabética e mostrar UTC principal
+    paises.sort((a, b) => a.nome.localeCompare(b.nome));
+    paises.forEach(pais => {
+      const option = document.createElement('option');
+      option.value = pais.nome;
+      option.textContent = `${pais.nome} — ${pais.utc}`;
+      paisesSelect.appendChild(option);
+    });
+
+    function abrirSelecao() {
+      areaSelecao.classList.add('aberta');
+      abrirSelecaoBtn.style.display = 'none';
+    }
+    function fecharSelecao() {
+      areaSelecao.classList.remove('aberta');
+      abrirSelecaoBtn.style.display = 'flex';
+    }
+
+    function toggleCidades() {
+      cidadesContainer.classList.toggle('visible');
+      const btn = document.querySelector('.toggle-cidades');
+      btn.textContent = cidadesContainer.classList.contains('visible') ? '▼' : '▶';
+    }
+
+    // Evento de mudança no select de países
+    paisesSelect.addEventListener('change', function() {
+      const paisNome = this.value;
+      if (!paisNome) {
+        paisSelecionado.style.display = 'none';
+        filtroCidades.disabled = true;
+        cidadesContainer.classList.remove('visible');
+        cidadesSelecionadas.clear();
+        return;
+      }
+
+      const pais = paises.find(p => p.nome === paisNome);
+      if (!pais) return;
+
+      paisSelecionado.textContent = paisNome;
+      paisSelecionado.style.display = 'inline-block';
+      filtroCidades.disabled = false;
+      cidadesContainer.classList.add('visible');
+      atualizarListaCidades(pais);
+    });
+
+    // Evento de filtro de cidades
+    filtroCidades.addEventListener('input', function() {
+      const filtro = this.value.toLowerCase();
+      const items = cidadesContainer.querySelectorAll('.cidade-item');
+      items.forEach(item => {
+        const texto = item.textContent.toLowerCase();
+        item.style.display = texto.includes(filtro) ? 'flex' : 'none';
+      });
+    });
+
+    function atualizarListaCidades(pais) {
+      cidadesContainer.innerHTML = '';
+      // Ordenar timezones por cidade
+      const tzs = [...pais.timezones].sort((a, b) => a.cidade.localeCompare(b.cidade));
+      tzs.forEach(timezone => {
+        const div = document.createElement('div');
+        div.className = 'cidade-item';
+        let principalStar = timezone.principal ? ' <span style="color:#FFD600;font-size:1.1em;">★</span>' : '';
+        div.innerHTML = `
+          <span>${timezone.cidade} — <span style="color:#aaa;">${timezone.tz}: ${timezone.utc}</span>${principalStar}</span>
+        `;
+        div.onclick = () => {
+          const cidadeId = `${pais.nome}-${timezone.cidade}`;
+          if (cidadesSelecionadas.has(cidadeId)) {
+            cidadesSelecionadas.delete(cidadeId);
+            div.classList.remove('selected');
+          } else {
+            cidadesSelecionadas.add(cidadeId);
+            div.classList.add('selected');
+          }
+          atualizarPaisesSelecionados();
+          atualizarOrdemSelecionada();
+        };
+        cidadesContainer.appendChild(div);
+      });
+    }
+
+    function atualizarPaisesSelecionados() {
+      paisesSelecionados.innerHTML = '';
+      // Obter países únicos das cidades selecionadas
+      const paisesUnicos = new Set();
+      cidadesSelecionadas.forEach(cidadeId => {
+        const [paisNome] = cidadeId.split('-');
+        paisesUnicos.add(paisNome);
+      });
+      let paisesArray = Array.from(paisesUnicos).map(paisNome => {
+        const pais = paises.find(p => p.nome === paisNome);
+        return pais ? { nome: paisNome, utc: pais.utc, codigo: pais.codigo } : null;
+      }).filter(Boolean);
+      // Ordem personalizada se houver, senão por UTC
+      if (modoOrdemPaisPersonalizada && ordemPaisesSelecionados.length === paisesArray.length) {
+        paisesArray = ordemPaisesSelecionados.map(nome =>
+          paisesArray.find(p => p.nome === nome)
+        ).filter(Boolean);
+      } else {
+        paisesArray.sort((a, b) => {
+          function parseUTC(utc) {
+            if (!utc) return 0;
+            const match = utc.match(/UTC([+-]?)(\d{1,2})(?::(\d{1,2}))?/);
+            if (!match) return 0;
+            let val = parseInt(match[2], 10);
+            if (match[3]) val += parseInt(match[3], 10) / 60;
+            return (match[1] === '-' ? -1 : 1) * val;
+          }
+          return parseUTC(a.utc) - parseUTC(b.utc);
+        });
+        ordemPaisesSelecionados = paisesArray.map(p => p.nome);
+      }
+      paisesArray.forEach((paisObj, idx) => {
+        const div = document.createElement('div');
+        div.className = 'pais-selecionado-item';
+        div.setAttribute('draggable', 'true');
+        div.setAttribute('data-pais-nome', paisObj.nome);
+        div.innerHTML = `
+          <img src="https://flagcdn.com/32x24/${paisObj.codigo}.png" alt="${paisObj.nome}">
+          <span>${paisObj.nome}</span>
+          <button class="remove-pais" onclick="removerPais('${paisObj.nome}')">×</button>
+        `;
+        paisesSelecionados.appendChild(div);
+      });
+      atualizarOrdemSelecionada();
+      salvarOrdemPaises();
+    }
+
+    function removerPais(paisNome) {
+      const cidadesParaRemover = Array.from(cidadesSelecionadas).filter(id => id.startsWith(paisNome));
+      cidadesParaRemover.forEach(id => cidadesSelecionadas.delete(id));
+      atualizarPaisesSelecionados();
+      renderTable();
+      atualizarOrdemSelecionada();
+    }
+
+    async function atualizarHorarios() {
+      const cidadesParaAtualizar = ordemSelecionada.length > 0 ? ordemSelecionada : Array.from(cidadesSelecionadas);
+      const total = cidadesParaAtualizar.length;
+      if (total === 0) {
+        alert('Please select at least one city');
+        return;
+      }
+      loadingBarContainer.classList.add('visible');
+      loadingBarInner.style.width = '0%';
+      loadingBarLabel.textContent = 'Updating times...';
+      tbody.innerHTML = '';
+      horariosAtuais.clear();
+      let carregadas = 0;
+      for (const cidadeId of cidadesParaAtualizar) {
+        const [paisNome, cidadeNome] = cidadeId.split('-');
+        const pais = paises.find(p => p.nome === paisNome);
+        if (!pais) continue;
+        const timezone = pais.timezones.find(t => t.cidade === cidadeNome);
+        if (!timezone) continue;
+        let horario = '...';
+        let diaLocal = '';
+        try {
+          const res = await fetch(`https://timeapi.io/api/Time/current/zone?timeZone=${timezone.tz}`);
+          const data = await res.json();
+          if (data && data.hour !== undefined && data.minute !== undefined) {
+            const hora = data.hour.toString().padStart(2, '0');
+            const minuto = data.minute.toString().padStart(2, '0');
+            horario = `${hora}:${minuto}`;
+            // Dia local (ex: 24Apr)
+            if (data.day && data.month && data.year) {
+              const meses = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+              diaLocal = `${data.day}${meses[data.month-1]}`;
+            }
+            horariosAtuais.set(cidadeId, { hora: data.hour, minuto: data.minute, timezone: timezone.tz });
+          } else {
+            horario = 'Inválido';
+          }
+        } catch {
+          horario = 'Erro';
+        }
+        const tr = document.createElement('tr');
+        tr.setAttribute('draggable', 'true');
+        tr.setAttribute('data-cidade-id', cidadeId);
+        const urlBandeira = `https://flagcdn.com/32x24/${pais.codigo}.png`;
+        tr.innerHTML = `
+          <td><img src="${urlBandeira}" alt="${pais.nome}" title="${pais.nome}" style="width:32px;height:24px;border-radius:3px;"></td>
+          <td>${timezone.cidade}/${pais.nome}</td>
+          <td class="horario">
+            <span style="font-size:0.65em;vertical-align:super;">${diaLocal ? diaLocal : ''}</span><br>${horario}
+          </td>
+        `;
+        tbody.appendChild(tr);
+        carregadas++;
+        const percent = Math.round((carregadas / total) * 100);
+        loadingBarInner.style.width = percent + '%';
+        loadingBarLabel.textContent = `Updating times... (${percent}%)`;
+        await new Promise(r => setTimeout(r, 100));
+      }
+      loadingBarLabel.textContent = 'Times updated!';
+      setTimeout(() => loadingBarContainer.classList.remove('visible'), 800);
+      iniciarContador();
+      salvarSelecao();
+    }
+
+    function iniciarContador() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+      timerInterval = setInterval(() => {
+        horariosAtuais.forEach((horario, cidadeId) => {
+          let { hora, minuto } = horario;
+          minuto++;
+          if (minuto >= 60) {
+            minuto = 0;
+            hora++;
+            if (hora >= 24) {
+              hora = 0;
+            }
+          }
+          horariosAtuais.set(cidadeId, { ...horario, hora, minuto });
+          const tr = document.querySelector(`tr[data-cidade-id="${cidadeId}"]`);
+          if (tr) {
+            const horarioCell = tr.querySelector('.horario');
+            if (horarioCell) {
+              horarioCell.textContent = `${hora.toString().padStart(2, '0')}:${minuto.toString().padStart(2, '0')}`;
+            }
+          }
+        });
+      }, 60000);
+    }
+
+    // Drag and drop handlers
+    tbody.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const tr = e.target.closest('tr');
+      if (tr) {
+        tr.style.background = '#555';
+      }
+    });
+    tbody.addEventListener('dragleave', (e) => {
+      const tr = e.target.closest('tr');
+      if (tr) {
+        tr.style.background = '';
+      }
+    });
+    tbody.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const tr = e.target.closest('tr');
+      if (tr) {
+        tr.style.background = '';
+        const fromId = e.dataTransfer.getData('text/plain');
+        const toId = tr.getAttribute('data-cidade-id');
+        if (fromId !== toId) {
+          const fromTr = document.querySelector(`tr[data-cidade-id="${fromId}"]`);
+          if (fromTr) {
+            tbody.insertBefore(fromTr, tr);
+            const idxFrom = ordemSelecionada.indexOf(fromId);
+            const idxTo = ordemSelecionada.indexOf(toId);
+            if (idxFrom > -1 && idxTo > -1) {
+              ordemSelecionada.splice(idxFrom, 1);
+              ordemSelecionada.splice(idxTo, 0, fromId);
+              salvarSelecao();
+            }
+          }
+        }
+      }
+    });
+    Array.from(tbody.children).forEach(row => {
+      row.ondragstart = (e) => {
+        e.dataTransfer.setData('text/plain', row.getAttribute('data-cidade-id'));
+        row.style.opacity = '0.5';
+      };
+      row.ondragend = (e) => {
+        row.style.opacity = '';
+      };
+    });
+
+    // Função para salvar seleção no Local Storage (mantendo a ordem)
+    function salvarSelecao() {
+      localStorage.setItem('timezonesSelecionadas', JSON.stringify(Array.from(cidadesSelecionadas)));
+    }
+
+    // Função para restaurar seleção do Local Storage (mantendo a ordem)
+    function restaurarSelecao() {
+      const salvas = localStorage.getItem('timezonesSelecionadas');
+      if (salvas) {
+        cidadesSelecionadas = new Set(JSON.parse(salvas));
+        ordemSelecionada = JSON.parse(salvas);
+        atualizarPaisesSelecionados();
+        atualizarHorarios();
+      }
+    }
+
+    // Sempre que adicionar/remover cidades, atualizar ordemSelecionada
+    function atualizarOrdemSelecionada() {
+      ordemSelecionada = Array.from(cidadesSelecionadas);
+      salvarSelecao();
+    }
+
+    // Drag and drop para países selecionados
+    paisesSelecionados.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const div = e.target.closest('.pais-selecionado-item');
+      if (div) div.style.background = '#555';
+    });
+    paisesSelecionados.addEventListener('dragleave', (e) => {
+      const div = e.target.closest('.pais-selecionado-item');
+      if (div) div.style.background = '';
+    });
+    paisesSelecionados.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const div = e.target.closest('.pais-selecionado-item');
+      if (div) {
+        div.style.background = '';
+        const fromNome = e.dataTransfer.getData('text/pais-nome');
+        const toNome = div.getAttribute('data-pais-nome');
+        if (fromNome !== toNome) {
+          const idxFrom = ordemPaisesSelecionados.indexOf(fromNome);
+          const idxTo = ordemPaisesSelecionados.indexOf(toNome);
+          if (idxFrom > -1 && idxTo > -1) {
+            ordemPaisesSelecionados.splice(idxFrom, 1);
+            ordemPaisesSelecionados.splice(idxTo, 0, fromNome);
+            modoOrdemPaisPersonalizada = true;
+            atualizarPaisesSelecionados();
+            salvarOrdemPaises();
+          }
+        }
+      }
+    });
+    paisesSelecionados.addEventListener('dragstart', (e) => {
+      const div = e.target.closest('.pais-selecionado-item');
+      if (div) {
+        e.dataTransfer.setData('text/pais-nome', div.getAttribute('data-pais-nome'));
+        div.style.opacity = '0.5';
+      }
+    });
+    paisesSelecionados.addEventListener('dragend', (e) => {
+      const div = e.target.closest('.pais-selecionado-item');
+      if (div) div.style.opacity = '';
+    });
+
+    function salvarOrdemPaises() {
+      localStorage.setItem('ordemPaisesSelecionados', JSON.stringify(ordemPaisesSelecionados));
+      localStorage.setItem('modoOrdemPaisPersonalizada', modoOrdemPaisPersonalizada ? '1' : '0');
+    }
+    function restaurarOrdemPaises() {
+      const ordem = localStorage.getItem('ordemPaisesSelecionados');
+      if (ordem) ordemPaisesSelecionados = JSON.parse(ordem);
+      modoOrdemPaisPersonalizada = localStorage.getItem('modoOrdemPaisPersonalizada') === '1';
+    }
+    // Restaurar ordem dos países ao carregar
+    window.addEventListener('DOMContentLoaded', restaurarOrdemPaises);
+
+    // Chamar restaurarSelecao ao carregar a página
+    window.addEventListener('DOMContentLoaded', restaurarSelecao);
+  </script>
+</body>
+</html>
